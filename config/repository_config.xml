@@ -1,0 +1,10 @@
+<repository>
+  <host>localhost</host>
+  <port>8989</port>
+  <repositoryURL>http://localhost:8888/</repositoryURL>
+  <repositoryUser>user</repositoryUser>
+  <repositoryPassword>password</repositoryPassword>
+  <repositoryName>mode:da</repositoryName>
+  <workspaceName>prod</workspaceName>
+  <removePathPrefix>C:\Nott\workflowdemo\staging,C:\Nott\workflowdemo\pubs\staging</removePathPrefix>
+</repository>

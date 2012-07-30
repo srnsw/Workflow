@@ -1,0 +1,6 @@
+<emailnotification>
+  <mailHost>molineux.records.nsw.gov.au</mailHost>
+  <mailUser>da.workflow@records.nsw.gov.au</mailUser>
+  <mailPassword></mailPassword>
+  <mailPort>25</mailPort>
+</emailnotification>

@@ -1,0 +1,10 @@
+<clamav>
+  <clamdport>3310</clamdport>
+  <clamdhost>localhost</clamdhost>
+</clamav>
+<mail-notification name="system-error">
+	<to>wisanu.promthong@records.nsw.gov.au</to>
+	<subject>DA system alert</subject>
+	<message>System malfunction detected</message>
+</mail-notification>
+<repository name="repository-deposit"></repository>

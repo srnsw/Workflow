@@ -1,0 +1,30 @@
+<da>
+  <listenPort>7890</listenPort>
+  <listenHost>localhost</listenHost>
+  <dbuser>root</dbuser>
+  <dbpassword></dbpassword>
+  <dbhost>localhost</dbhost>
+  <dbport>3306</dbport>
+  <dbname>workflow</dbname>
+  <actions>
+    <au.gov.nsw.records.digitalarchive.action.helper.SleepAction />
+    <au.gov.nsw.records.digitalarchive.action.fileop.IsilonFileMoveAction />
+    <au.gov.nsw.records.digitalarchive.action.fileop.IsilonFileCopyAction />
+    <au.gov.nsw.records.digitalarchive.action.fileop.IsilonFileDeleteAction />
+    <au.gov.nsw.records.digitalarchive.action.fileop.NativeFileOperationAction />
+    <au.gov.nsw.records.digitalarchive.action.qurantine.ClamAVAction />
+    <au.gov.nsw.records.digitalarchive.action.identification.DroidFileIdentificationAction />
+    <au.gov.nsw.records.digitalarchive.action.notification.EmailNotificationAction />
+    <au.gov.nsw.records.digitalarchive.action.metadata.ExifMetadataAction />
+    <au.gov.nsw.records.digitalarchive.action.repository.RepositoryAction />
+    <au.gov.nsw.records.digitalarchive.action.helper.SumcheckAction />
+    <au.gov.nsw.records.digitalarchive.action.identification.TikaFileIdentificationAction />
+    <au.gov.nsw.records.digitalarchive.action.metadata.TikaMetadataAction />
+    <au.gov.nsw.records.digitalarchive.action.preservation.PreservationAction />
+    <au.gov.nsw.records.digitalarchive.action.identification.XenaFileIdentificationAction />
+  </actions>
+  <notificationListeners>
+    <!--  au.gov.nsw.records.digitalarchive.kernel.externallistener.DAWebNotificationAdapter/ -->
+    <au.gov.nsw.records.digitalarchive.WorkflowConsole/>
+  </notificationListeners>
+</da>

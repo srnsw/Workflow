@@ -1,0 +1,4 @@
+<xena>
+  <plugin_path>./data/xenaplugins</plugin_path>
+  <open_office_location>/usr/bin</open_office_location>
+</xena>

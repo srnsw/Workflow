@@ -1,0 +1,6 @@
+<isilon>
+  <host>192.168.21.40</host>
+  <port>9443</port>
+  <user>devsrv</user>
+  <password>AOS8kIqMNh</password>
+</isilon>
