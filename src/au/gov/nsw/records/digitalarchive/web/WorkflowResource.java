@@ -57,11 +57,11 @@ public class WorkflowResource {
 		
 		return "{}";
 	}
-*/
+*/	
 	@POST 
 	@Produces(MediaType.APPLICATION_JSON)
-	public String createWorkflow(@QueryParam("reference") String reference, @QueryParam("fileslocation") String fileslocation, @QueryParam("workflow") String workflow){
-		Workflow wf = WorkflowController.getInstance().createWorkflow(fileslocation, workflow, reference);
+	public String createWorkflow(@QueryParam("reference") String reference, @QueryParam("xml") String xml){
+		Workflow wf = WorkflowController.getInstance().createWorkflow(xml, reference);
 		try {
 			return mapper.writeValueAsString(wf);
 		} catch (Exception e) {
@@ -70,7 +70,6 @@ public class WorkflowResource {
 		// Shuouldn't fall through this point
 		throw new WebApplicationException(Status.INTERNAL_SERVER_ERROR);
 	}
-	
 //	private String getAllWorkflows(){
 //		try {
 //			List<WorkflowCache> wfi =  sort(ActiveRecordFactory.getAllWorkflowCache(0, 0), on(WorkflowCache.class).getId());

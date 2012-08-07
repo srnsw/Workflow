@@ -1,83 +1,86 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<workflow name="generic">
-  <action-set name="start" next-action-set="quarantine" error-action-set="end"> </action-set>
-
-  <action-set name="quarantine" next-action-set="preservation" error-action-set="error">
+<workflow name="Stat Robot internal ingest">
+  
+  <contextPath>C:\Nott\workflowdemo\inbox\</contextPath>
+  <inputFiles>
+    <string>StateRobotNSW\TheTransferOfJedi\Questions from SRNSW Digital Archives team.doc</string>
+	<string>StateRobotNSW\TheTransferOfJedi\Digital State archives for GSM May 2011.ppt</string>
+  </inputFiles>
+  
+  
+  <actionSet name="start" nextActionSet="quarantine" errorActionSet="end"> </actionSet>
+  
+  <actionSet name="quarantine" nextActionSet="preservation" errorActionSet="error">
   	
-  	<file-ops name="copy">
+  	<fileOps name="copy">
   	  <actionOption>COPY</actionOption>
-  	  <source>C:\Nott\workflowdemo\inbox\StateRobotNSW\TheTransferOfJedi</source>
-  	  <target>C:\Nott\workflowdemo\quarantine\StateRobotNSW\TheTransferOfJedi</target>
-  	</file-ops>
+  	  <source>C:\Nott\workflowdemo\inbox\</source>
+  	  <target>C:\Nott\workflowdemo\quarantine\</target>
+  	</fileOps>
   	
     <sleep name="1-min-quarantine">
-      <minute>1</minute>
+      <minute>0</minute>
       <hour>0</hour>
       <day>0</day>
     </sleep>
     
-    <virus-scan name="virus-check">
-	   <path>C:\Nott\workflowdemo\quarantine\StateRobotNSW\TheTransferOfJedi</path>
-  	</virus-scan>
+  	<mailNotification name="system-alert">
+  	 <to>wisanu.promthong@records.nsw.gov.au</to>
+	 <subject>DA system alert</subject>
+  	 <message>The Transfer Of Jedi was successfully quarantined without error</message>
+  	</mailNotification>
   	
-  	<mail-notification name="system-alert">
-  	 <target>wisanu.promthong@records.nsw.gov.au</target>
-  	 <message>the file are quarantined</message>
-  	</mail-notification>
-  	
-  </action-set>
+  </actionSet>
   
-   <action-set name="preservation" next-action-set="repository" error-action-set="error">
-    <file-ops name="copy">
-  	  <source>C:\Nott\workflowdemo\quarantine\StateRobotNSW\TheTransferOfJedi</source>
-  	  <target>C:\Nott\workflowdemo\staging\StateRobotNSW\TheTransferOfJedi</target>
-  	</file-ops>
-	<normalisation name="doc_to_pdf">
-	  <pathways>
-	    <string>http://localhost:8080/pathways/1</string>
-	    <string>http://localhost:8080/pathways/2</string>
-      </pathways>
-	</normalisation>
-	<normalisation name="binary">
- 	  <pathways>
-	    <string>http://localhost:8080/pathways/1</string>
-      </pathways>
-	</normalisation>
-  </action-set>
-  
-  <action-set name="repository" next-action-set="cleanup" error-action-set="error" >
-    <repository name="repository-deposit">
-  		<source>C:\Nott\workflowdemo\staging\StateRobotNSW\TheTransferOfJedi</source>
-  	</repository>
-  	
-  	<mail-notification name="system-alert">
-  	 <target>wisanu.promthong@records.nsw.gov.au</target>
-  	 <message>the records are stored in the repository</message>
-  	</mail-notification>
-  	
-  </action-set>
-  
-  <action-set name="cleanup" next-action-set="end" error-action-set="error">
-  	
-  	<file-ops name="delete_inbox">
-  	  <source>C:\Nott\workflowdemo\inbox\StateRobotNSW\TheTransferOfJedi</source>
-  	</file-ops>
-  	
-  	<file-ops name="delete_quarantine">
-  	  <source>C:\Nott\workflowdemo\quarantine\StateRobotNSW\TheTransferOfJedi</source>
-  	</file-ops>
+   <actionSet name="preservation" nextActionSet="repository" errorActionSet="error">
+    <fileOps name="copy">
+	  <actionOption>COPY</actionOption>
+  	  <source>C:\Nott\workflowdemo\quarantine\</source>
+  	  <target>C:\Nott\workflowdemo\staging\</target>
+  	</fileOps>
+    <droidIdentification name="droid-identification"></droidIdentification>
+	<tikaIdentification name="itka-identification"></tikaIdentification>
+    <tikaMetadata name="tika metadata"></tikaMetadata>
+    <exifMetadata name="exif metadata"></exifMetadata>
+	
+	<preservation name="preservation conversion">
+ 	  <purpose>preservation</purpose>
+	</preservation>
     
-  	<file-ops name="delete_preservation">
-  	  <source>C:\Nott\workflowdemo\staging\StateRobotNSW\TheTransferOfJedi</source>
-  	</file-ops>
-
-  </action-set>
+    <sumCheck name="sum-check"></sumCheck>
+  </actionSet>
   
-  <action-set name="error" next-action-set="end" error-action-set="end" >  	
-  	<mail-notification name="system-error">
-  	 <target>wisanu.promthong@records.nsw.gov.au</target>
-  	 <message>system malfunction detected</message>
-  	</mail-notification>
-  </action-set>
+  <actionSet name="repository" nextActionSet="cleanup" errorActionSet="error" >
+    <repository name="repository-deposit"></repository>
+  	
+  	<mailNotification name="system-alert">
+  	 <to>wisanu.promthong@records.nsw.gov.au</to>
+	 <subject>DA system alert</subject>
+  	 <message>The records are successfully stored in the repository</message>
+  	</mailNotification>
+  	
+  </actionSet>
+  
+  <actionSet name="cleanup" nextActionSet="end" errorActionSet="error">
+  	  	
+  	<fileOps name="delete_quarantine">
+	  <actionOption>DELETE</actionOption>
+  	  <source>C:\Nott\workflowdemo\quarantine\</source>
+  	</fileOps>
+	<fileOps name="delete_staging">
+	  <actionOption>DELETE</actionOption>
+  	  <source>C:\Nott\workflowdemo\staging\</source>
+  	</fileOps>
+	
+  </actionSet>
+  
+  <actionSet name="error" nextActionSet="end" errorActionSet="end" >  	
+  	<mailNotification name="system-error">
+  	 <to>wisanu.promthong@records.nsw.gov.au</to>
+	 <subject>DA system alert</subject>
+  	 <message>System malfunction detected</message>
+	 <includeLastError>true</includeLastError>
+  	</mailNotification>
+  </actionSet>
   
 </workflow>

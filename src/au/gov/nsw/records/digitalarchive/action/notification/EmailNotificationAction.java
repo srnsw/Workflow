@@ -72,7 +72,7 @@ public class EmailNotificationAction extends AbstractAction {
 			email.setSubject(String.format("[%d - %s] %s", cache.getLongId(), cache.getString(WorkflowCache.NAME), subject));
 
 			if (includeLastError){
-				message = message + "\nError:" + cache.getString(WorkflowCache.LASTERROR);
+				message = message + "\n\nError:\n" + cache.getString(WorkflowCache.LASTERROR);
 			}
 			email.setTextMsg(message);
 			//email.setHtmlMsg(htmlBody);

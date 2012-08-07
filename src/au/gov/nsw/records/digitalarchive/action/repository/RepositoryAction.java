@@ -92,7 +92,7 @@ public class RepositoryAction extends AbstractAction {
 			CoreThreadFactory.getCallBackExecutorService().execute(new Runnable() {
 				@Override
 				public void run() {
-					listener.onActionError(RepositoryAction.this, e.getMessage());
+					listener.onActionError(RepositoryAction.this, e.getMessage() + " [make sure that repository client is running]");
 				}
 			});
 		}

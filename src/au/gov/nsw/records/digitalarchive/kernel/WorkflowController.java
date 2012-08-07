@@ -79,35 +79,28 @@ public class WorkflowController implements EventHandler{
 		}
 	}
 
-	public Workflow createWorkflow(String fileLocation, String workflowXmlName, String reference){
+	public Workflow createWorkflow(String workflowXml, String reference){
 		
-		try{
-			Workflow wf = WorkflowDeserializer.loadFromFile(fileLocation + File.separatorChar + workflowXmlName);
-			if (wf!=null){
-				
-				// invalid workflow definition
-				if (!wf.getActionSetSequence().get(wf.getActionSetSequence().size() - 1).equals("end")){
-					log.fatal(String.format("Unable to load workflow from [%s\\%s] - no path to the end action set specified",fileLocation, workflowXmlName));
-					return null;
-				}
-				
-				String xml = FileReader.read(fileLocation + File.separatorChar + workflowXmlName);
-				WorkflowCache cache = ActiveRecordFactory.addWorkflowCache(wf.getName(), WorkflowState.WAITING.toString(), "", xml, fileLocation, reference);
-				for (File f:new File(fileLocation).listFiles()){
-					ActiveRecordFactory.addWorkflowEntry(f.getName(), "", "", cache);
-				}
-				workflows.put(cache.getLongId(), wf);
-				wf.prepare(cache);
-				return wf;
-			}else{
-				log.error("Unable to load workflow from [" + fileLocation  + "\\" +  workflowXmlName + "]");
+		Workflow wf = WorkflowDeserializer.load(workflowXml);
+		if (wf!=null){
+
+			// invalid workflow definition
+			if (!wf.getActionSetSequence().get(wf.getActionSetSequence().size() - 1).equals("end")){
+				log.fatal(String.format("Invalid workflow - no path to the end action set specified"));
+				return null;
 			}
-		}catch (IOException e){
-			log.error("Unable to load workflow XML from [" + fileLocation  + "\\" +  workflowXmlName + "]", e);
+
+			WorkflowCache cache = ActiveRecordFactory.addWorkflowCache(wf.getName(), WorkflowState.WAITING.toString(), "", workflowXml, wf.getContextPath() , reference);
+
+			workflows.put(cache.getLongId(), wf);
+			wf.prepare(cache);
+			return wf;
+		}else{
+			log.error("Error while parsing workflow XML");
 		}
+		
 		return null;
 	}
-	
 	
 	/**
 	 * Load and continue execute all workflows that are not in completed or cancelled state.

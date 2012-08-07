@@ -1,6 +1,7 @@
 package au.gov.nsw.records.digitalarchive;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import au.gov.nsw.records.digitalarchive.kernel.activerecord.ActiveRecordFactory
 import au.gov.nsw.records.digitalarchive.kernel.activerecord.WorkflowCache;
 import au.gov.nsw.records.digitalarchive.kernel.externallistener.WorkflowNotificationListener;
 import au.gov.nsw.records.digitalarchive.kernel.processing.workflow.Workflow;
+import au.gov.nsw.records.digitalarchive.utils.FileReader;
 
 /**
  * The interactive command line for sending and receiving event to DAW(Digital Archives Workflow) 
@@ -148,20 +150,29 @@ public class WorkflowConsole implements WorkflowNotificationListener{
 	}
 
 	private void create(String path, String xmlname, String ref){
-		Workflow wf = WorkflowController.getInstance().createWorkflow(path, xmlname, ref);
-		if (wf!=null){
-			ObjectMapper mapper = new ObjectMapper();
-			try {
-				System.out.println(mapper.writeValueAsString(wf));
-			} catch (JsonGenerationException e) {
-				e.printStackTrace();
-			} catch (JsonMappingException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
+		
+		try {
+			String xml = FileReader.read(path + File.separatorChar + xmlname);
+
+			Workflow wf = WorkflowController.getInstance().createWorkflow(xml, ref);
+
+			if (wf!=null){
+				ObjectMapper mapper = new ObjectMapper();
+				try {
+					System.out.println(mapper.writeValueAsString(wf));
+				} catch (JsonGenerationException e) {
+					e.printStackTrace();
+				} catch (JsonMappingException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}else{
+				System.out.println("Unable to create a workflow with the supplied xml");
 			}
-		}else{
-			System.out.println("Unable to create a workflow with the supplied xml");
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 	}
 	

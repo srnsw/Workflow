@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<workflow name="State Robot internal ingest">
+<workflow name="Stat Robot internal ingest">
+  
+  <contextPath>C:\Nott\workflowdemo\inbox\</contextPath>
+  <inputFiles>
+    <string>StateRobotNSW\TheTransferOfJedi\Questions from SRNSW Digital Archives team.doc</string>
+	<string>StateRobotNSW\TheTransferOfJedi\Digital State archives for GSM May 2011.ppt</string>
+  </inputFiles>
+  
+  
   <actionSet name="start" nextActionSet="quarantine" errorActionSet="end"> </actionSet>
-
+  
   <actionSet name="quarantine" nextActionSet="preservation" errorActionSet="error">
   	
   	<fileOps name="copy">
   	  <actionOption>COPY</actionOption>
-  	  <source>C:\Nott\workflowdemo\inbox\StateRobotNSW\TheTransferOfJedi</source>
-  	  <target>C:\Nott\workflowdemo\quarantine\StateRobotNSW\TheTransferOfJedi</target>
+  	  <source>C:\Nott\workflowdemo\inbox\</source>
+  	  <target>C:\Nott\workflowdemo\quarantine\</target>
   	</fileOps>
   	
     <sleep name="1-min-quarantine">
@@ -27,8 +35,8 @@
    <actionSet name="preservation" nextActionSet="repository" errorActionSet="error">
     <fileOps name="copy">
 	  <actionOption>COPY</actionOption>
-  	  <source>C:\Nott\workflowdemo\quarantine\StateRobotNSW\TheTransferOfJedi</source>
-  	  <target>C:\Nott\workflowdemo\staging\StateRobotNSW\TheTransferOfJedi</target>
+  	  <source>C:\Nott\workflowdemo\quarantine\</source>
+  	  <target>C:\Nott\workflowdemo\staging\</target>
   	</fileOps>
     <droidIdentification name="droid-identification"></droidIdentification>
 	<tikaIdentification name="itka-identification"></tikaIdentification>
@@ -57,11 +65,11 @@
   	  	
   	<fileOps name="delete_quarantine">
 	  <actionOption>DELETE</actionOption>
-  	  <source>C:\Nott\workflowdemo\quarantine\StateRobotNSW\TheTransferOfJedi</source>
+  	  <source>C:\Nott\workflowdemo\quarantine\</source>
   	</fileOps>
 	<fileOps name="delete_staging">
 	  <actionOption>DELETE</actionOption>
-  	  <source>C:\Nott\workflowdemo\staging\StateRobotNSW\TheTransferOfJedi</source>
+  	  <source>C:\Nott\workflowdemo\staging\</source>
   	</fileOps>
 	
   </actionSet>
@@ -71,6 +79,7 @@
   	 <to>wisanu.promthong@records.nsw.gov.au</to>
 	 <subject>DA system alert</subject>
   	 <message>System malfunction detected</message>
+	 <includeLastError>true</includeLastError>
   	</mailNotification>
   </actionSet>
   

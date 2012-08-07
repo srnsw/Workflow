@@ -1,5 +1,6 @@
 package au.gov.nsw.records.digitalarchive.kernel.processing.workflow;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -9,6 +10,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import au.gov.nsw.records.digitalarchive.kernel.activerecord.ActiveRecordFactory;
+import au.gov.nsw.records.digitalarchive.kernel.activerecord.Entry;
 import au.gov.nsw.records.digitalarchive.kernel.activerecord.WorkflowCache;
 import au.gov.nsw.records.digitalarchive.kernel.externallistener.WorkflowNotificationDelegator;
 import au.gov.nsw.records.digitalarchive.kernel.processing.actionset.ActionSet;
@@ -42,6 +44,9 @@ public class Workflow implements ActionSetListener {
 	
 	@XStreamOmitField
 	private WorkflowCache cache;
+	
+	private List<String> inputFiles;
+	private String contextPath;
 
 	private static final Log log = LogFactory.getLog(Workflow.class);
 	/**
@@ -63,12 +68,22 @@ public class Workflow implements ActionSetListener {
 		this.listener = listener;
 	}
 	
+	public String getContextPath(){
+		return contextPath;
+	}
 	/**
 	 * Assigns WorkflowCache to this object and makes it aware to process further action 
 	 * @param workflowCache
 	 */
 	public void prepare(WorkflowCache workflowCache){
 		this.cache = workflowCache;
+
+		// check for pre existing input files. This entry should not be added further more in case of recovery
+		if (workflowCache.getAll(Entry.class).isEmpty()){
+			for (String inputFile:inputFiles){
+				ActiveRecordFactory.addWorkflowEntry(inputFile, "", "", cache);
+			}	 
+		}
 		
 		// XStream deserialization ignoring constructor, cause null in these two fields
 		if (actionsets == null){
