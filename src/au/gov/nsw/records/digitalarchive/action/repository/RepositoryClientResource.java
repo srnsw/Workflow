@@ -1,6 +1,7 @@
 package au.gov.nsw.records.digitalarchive.action.repository;
 
 import java.io.File;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import javax.ws.rs.POST;
@@ -19,6 +20,8 @@ import org.codehaus.jackson.map.ObjectMapper;
 import au.gov.nsw.records.digitalarchive.action.repository.message.RepositoryResponseMessage;
 import au.gov.nsw.records.digitalarchive.utils.ConfigDeserializer;
 import au.gov.nsw.records.digitalarchive.utils.ConfigHelper;
+import au.gov.nsw.records.digitalarchive.utils.MultiPartFileUploader;
+import au.gov.nsw.records.digitalarchive.utils.StringHelper;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
@@ -31,12 +34,12 @@ public class RepositoryClientResource {
 
 	private static ObjectMapper mapper = new ObjectMapper();
 	private static RepositoryClientConfig config;
-	private static ModeShapeClientWrapper repoClient;
+	private static MultiPartFileUploader uploader;
 	private static final Log log = LogFactory.getLog(RepositoryClientResource.class);
 	
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
-	public String addFile(@QueryParam("filepath") String filepath, @QueryParam("callback") String callbackURL,
+	public String addFile(@QueryParam("filepath") List<String> filepath, @QueryParam("callback") String callbackURL,
 			@QueryParam("actionid") int actionId, @QueryParam("workflowid") int workflowId, @QueryParam("actionsetid") int actionsetId){
 		
 		if (config==null){
@@ -45,26 +48,33 @@ public class RepositoryClientResource {
 			config = configLoader.load(templateConf, ConfigHelper.getRepositoryConfig());
 		}
 		
-		// use ModeShape REST client API
-		if (repoClient == null){
-			repoClient = new ModeShapeClientWrapper(config);
+		if (uploader == null){
+			uploader = new MultiPartFileUploader(config.getRepositoryURL() + "/" + config.getRepositoryName());
 		}
+		
 		try {
 			RepositoryResponseMessage response = new RepositoryResponseMessage();
 			
 			// the destination location should not include the specific path i.e. /staging/AgencyAbc, the /staging/ should be removed.
-			String destPath = filepath;
-			for (String prefix : config.getRemovePathPrefix()){
-				destPath = destPath.replaceFirst(Pattern.quote(prefix.trim()), "");
-			}
-			destPath = destPath.replaceAll(Pattern.quote("\\"), "/");
-			log.info(String.format("Depositing [%s] to [%s]", filepath, destPath));
-			File inputDir = new File(filepath);
-			for (File f:inputDir.listFiles()){
-				if (!repoClient.addFile(f, destPath)){
-					response.setError(true);
-					throw new WebApplicationException(Status.INTERNAL_SERVER_ERROR);
+			for (String destPath:filepath){
+				String fullPath = destPath;
+				for (String prefix : config.getRemovePathPrefix()){
+					destPath = destPath.replaceFirst(Pattern.quote(prefix.trim()), "");
 				}
+				// Format backslash to slash in case of accepting path string from Windows environment.
+				destPath = destPath.replaceAll(Pattern.quote("\\"), "/");
+				// get only path name by trim off the file name
+				destPath = StringHelper.trimAfterLastSlash(destPath);
+				
+				File inputDir = new File(fullPath);
+				for (File f:inputDir.getParentFile().listFiles()){
+					log.info(String.format("Depositing [%s] to [%s]", f.getCanonicalPath(), destPath));
+					if (!uploader.uploadFile(f.getCanonicalPath(), destPath)){
+						response.setError(true);
+						throw new WebApplicationException(Status.INTERNAL_SERVER_ERROR);
+					}
+				}
+				
 			}
 			
 			if (callbackURL!=null && !callbackURL.isEmpty()){

@@ -20,7 +20,6 @@ import org.apache.tika.parser.Parser;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.helpers.DefaultHandler;
 
-import au.gov.nsw.records.digitalarchive.action.metadata.TikaMetadataAction;
 
 /**
  * The simplification usage of Apache Tika library

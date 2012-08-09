@@ -19,6 +19,13 @@ public class StringHelper {
 		return str;
 	}
 	
+	public static String trimAfterLastSlash(String str){
+		if (str.lastIndexOf("/") > 0){
+			return str.substring(0, str.lastIndexOf("/"));
+		}
+		return str;
+	}
+	
 	public static String formatUnixPath(String str){
 		// format Windows' backslash path to slash to comply with URL convention 
 		return str.replaceAll(Pattern.quote("\\"), "/");

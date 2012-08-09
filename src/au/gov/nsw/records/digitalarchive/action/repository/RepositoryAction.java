@@ -1,14 +1,18 @@
 package au.gov.nsw.records.digitalarchive.action.repository;
 
+import java.util.List;
+
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import au.gov.nsw.records.digitalarchive.action.AbstractAction;
+import au.gov.nsw.records.digitalarchive.kernel.activerecord.Entry;
 import au.gov.nsw.records.digitalarchive.kernel.activerecord.WorkflowCache;
 import au.gov.nsw.records.digitalarchive.utils.ConfigDeserializer;
 import au.gov.nsw.records.digitalarchive.utils.ConfigHelper;
+import au.gov.nsw.records.digitalarchive.utils.StringHelper;
 import au.gov.nsw.records.digitalarchive.utils.thread.CoreThreadFactory;
 
 import com.sun.jersey.api.client.Client;
@@ -53,11 +57,14 @@ public class RepositoryAction extends AbstractAction {
 		log.info(String.format("Action [%s] is being executed for [%s] ", getName(), workflowName));
 		log.info(String.format("Using [%s]", clientURL));
 		Client client = Client.create();
-		client.setReadTimeout(30000);
+		client.setReadTimeout(990000);
 		WebResource webResource = client.resource(clientURL);
 				
 		MultivaluedMap<String, String> queryParams = new MultivaluedMapImpl();
-		queryParams.add("filepath", source);
+		for (Entry ent: (List<Entry>)cache.getAll(Entry.class)){
+			queryParams.add("filepath", StringHelper.joinDirectoryString(source , ent.getString(Entry.NAME)));
+		}
+		
 		queryParams.add("callback", config.getCallbackURL());
 		queryParams.add("actionid", String.valueOf(getID()));
 		queryParams.add("workflowid", String.valueOf(workflowId));

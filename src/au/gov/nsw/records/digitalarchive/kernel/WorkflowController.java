@@ -1,7 +1,5 @@
 package au.gov.nsw.records.digitalarchive.kernel;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -18,7 +16,6 @@ import au.gov.nsw.records.digitalarchive.kernel.activerecord.ActiveRecordFactory
 import au.gov.nsw.records.digitalarchive.kernel.activerecord.WorkflowCache;
 import au.gov.nsw.records.digitalarchive.kernel.processing.workflow.Workflow;
 import au.gov.nsw.records.digitalarchive.kernel.processing.workflow.WorkflowState;
-import au.gov.nsw.records.digitalarchive.utils.FileReader;
 import au.gov.nsw.records.digitalarchive.utils.WorkflowDeserializer;
 import au.gov.nsw.records.digitalarchive.utils.thread.CoreThreadFactory;
 import au.gov.nsw.records.digitalarchive.utils.thread.NameableThreadFactory;

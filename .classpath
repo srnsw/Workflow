@@ -42,5 +42,7 @@
 	<classpathentry kind="lib" path="lib/tika-app-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/xena-6.0.jar"/>
 	<classpathentry kind="lib" path="lib/office.jar"/>
+	<classpathentry kind="lib" path="lib/httpclient-4.2.1.jar"/>
+	<classpathentry kind="lib" path="lib/httpmime-4.2.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
