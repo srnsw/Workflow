@@ -53,6 +53,7 @@ public class StringHelper {
 	 * @return
 	 */
 	public static String formatIsilonDirectoryString(String input){
+		input = formatUnixPath(input);
 		input = formatIsilonPathPrefix(input);
 		if (!input.endsWith("/")){
 			input = input + "/";
@@ -75,5 +76,9 @@ public class StringHelper {
 		}
 		
 		return buffer.toString();
+	}
+	
+	public static String formatIsilonImmediateDirectoryFromFileString(String... paths){
+		return "";
 	}
 }

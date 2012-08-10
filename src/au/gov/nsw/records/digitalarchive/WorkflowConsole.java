@@ -84,9 +84,9 @@ public class WorkflowConsole implements WorkflowNotificationListener{
 			} else if (command.startsWith("help")){
 				printHelp();
 			} else if (command.startsWith("@")){
-				create("C:\\Nott\\workflowdemo", "workflow.xml", "nottRef1");
+				create("./data/", "workflow.xml", "nottRef1");
 			} else if (command.startsWith("#")){
-				create("/ifs/devdata/dadata/inbox/SRNSW/Test1", "workflow.xml", "nottRef1");
+				create("./data", "workflow_unix.xml", "nottRef1");
 			}
 		}catch (IndexOutOfBoundsException e){
 			System.out.println("Invalid arguments, expect more argument");

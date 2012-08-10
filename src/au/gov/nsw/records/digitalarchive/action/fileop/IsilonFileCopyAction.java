@@ -1,9 +1,12 @@
 package au.gov.nsw.records.digitalarchive.action.fileop;
 
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import au.gov.nsw.records.digitalarchive.action.AbstractAction;
+import au.gov.nsw.records.digitalarchive.kernel.activerecord.Entry;
 import au.gov.nsw.records.digitalarchive.kernel.activerecord.WorkflowCache;
 import au.gov.nsw.records.digitalarchive.utils.StringHelper;
 import au.gov.nsw.records.digitalarchive.utils.thread.CoreThreadFactory;
@@ -18,6 +21,8 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("isilonCopy")
 public class IsilonFileCopyAction extends AbstractAction {
 
+	private WorkflowCache cache;
+	
 	public String from = "";
 	public String to = "";
 
@@ -26,24 +31,39 @@ public class IsilonFileCopyAction extends AbstractAction {
 	
 	@Override
 	public void processAction() {
-		// moving all resources under specified path would make more sense than coping each file individually
-		final String sourceDir = StringHelper.formatIsilonDirectoryString(StringHelper.trimLastSlash(from));
-		final String destDir = StringHelper.formatIsilonDirectoryString(StringHelper.trimLastSlash(to));
 
 		log.info(String.format("Action [%s] is being executed for [%s] ", getName(), workflowName));
-		
-		CoreThreadFactory.getCallBackExecutorService().execute(new Runnable() {
-			@Override
-			public void run() {
-				IsilonFileOperations fileOp = new IsilonFileOperations();
-				if (fileOp.copy(sourceDir, destDir)){
-					cache.set(WorkflowCache.RECENTLOCATION, destDir);
-					listener.onActionFinished(IsilonFileCopyAction.this);
-				}else{
-					listener.onActionError(IsilonFileCopyAction.this, String.format("failed to copy files from [%s] to [%s]", sourceDir, destDir));
-				}
+
+		IsilonFileOperations fileOp = new IsilonFileOperations();
+		for (Entry ent: (List<Entry>)cache.getAll(Entry.class)){
+			String file = StringHelper.formatUnixPath(ent.getString(Entry.NAME));
+			final String sourcePath = StringHelper.joinDirectoryString(from , StringHelper.trimAfterLastSlash(file));
+			final String destPath = StringHelper.joinDirectoryString(to , StringHelper.trimAfterLastSlash(file));
+
+			if (!fileOp.copy(sourcePath, destPath)){
+				CoreThreadFactory.getCallBackExecutorService().execute(new Runnable() {
+					@Override
+					public void run() {
+						 listener.onActionError(IsilonFileCopyAction.this, String.format("failed to copy files from [%s] to [%s]", sourcePath, destPath));
+					}
+				});
+				// no more processing
+				return;
 			}
-		});
-		
+			// all good
+			CoreThreadFactory.getCallBackExecutorService().execute(new Runnable() {
+				@Override
+				public void run() {
+					cache.set(WorkflowCache.RECENTLOCATION, to);
+					listener.onActionFinished(IsilonFileCopyAction.this);
+				}
+			});
+		}
+	}
+	
+	@Override
+	public void prepare(WorkflowCache cache, int actionSetId){ 
+		super.prepare(cache, actionSetId);
+		this.cache = cache;
 	}
 }

@@ -1,24 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workflow name="Stat Robot internal ingest">
   
-  <contextPath>C:\Nott\workflowdemo\inbox\</contextPath>
+  <contextPath>/ifs/devdata/dadata/inbox/</contextPath>
   <inputFiles>
-    <string>StateRobotNSW\TheTransferOfJedi\Questions from SRNSW Digital Archives team.doc</string>
-	<string>StateRobotNSW\TheTransferOfJedi\Digital State archives for GSM May 2011.ppt</string>
+    <string>aa/bb/cc/PROV SRNSW meetings 25 and 26 July.doc</string>
+	<string>aa/dd/ee/Digital State archives for GSM May 2011.ppt</string>
   </inputFiles>
-  
   
   <actionSet name="start" nextActionSet="quarantine" errorActionSet="end"> </actionSet>
   
   <actionSet name="quarantine" nextActionSet="preservation" errorActionSet="error">
-  	
-  	<fileOps name="copy">
-  	  <actionOption>COPY</actionOption>
-  	  <source>C:\Nott\workflowdemo\inbox\</source>
-  	  <target>C:\Nott\workflowdemo\quarantine\</target>
-  	</fileOps>
-  	
-    <sleep name="1-min-quarantine">
+  	<isilonCopy name="isiCopy" >
+  		<from>/ifs/devdata/dadata/inbox/</from>
+  		<to>/ifs/devdata/dadata/quarantine/</to>
+  	</isilonCopy>	
+  	  	
+    <sleep name="Quick Quarantine">
       <minute>0</minute>
       <hour>0</hour>
       <day>0</day>
@@ -33,11 +30,11 @@
   </actionSet>
   
    <actionSet name="preservation" nextActionSet="repository" errorActionSet="error">
-    <fileOps name="copy">
-	  <actionOption>COPY</actionOption>
-  	  <source>C:\Nott\workflowdemo\quarantine\</source>
-  	  <target>C:\Nott\workflowdemo\staging\</target>
-  	</fileOps>
+    
+    <isilonCopy name="isiCopy" >
+  		<from>/ifs/devdata/dadata/quarantine/</from>
+  		<to>/ifs/devdata/dadata/staging/</to>
+  	</isilonCopy>	
     <droidIdentification name="droid-identification"></droidIdentification>
 	<tikaIdentification name="itka-identification"></tikaIdentification>
     <tikaMetadata name="tika metadata"></tikaMetadata>
@@ -63,14 +60,12 @@
   
   <actionSet name="cleanup" nextActionSet="end" errorActionSet="error">
   	  	
-  	<fileOps name="delete_quarantine">
-	  <actionOption>DELETE</actionOption>
-  	  <source>C:\Nott\workflowdemo\quarantine\</source>
-  	</fileOps>
-	<fileOps name="delete_staging">
-	  <actionOption>DELETE</actionOption>
-  	  <source>C:\Nott\workflowdemo\staging\</source>
-  	</fileOps>
+  	<isilonDelete name="delete_quarantine">
+  	  <path>/ifs/devdata/dadata/quarantine/</path>
+  	</isilonDelete>
+	<isilonDelete name="delete_staging">
+  	  <path>/ifs/devdata/dadata/staging/</path>
+  	</isilonDelete>
 	
   </actionSet>
   

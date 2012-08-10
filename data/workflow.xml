@@ -3,15 +3,17 @@
   
   <contextPath>C:\Nott\workflowdemo\inbox\</contextPath>
   <inputFiles>
-    <string>StateRobotNSW\TheTransferOfJedi\Questions from SRNSW Digital Archives team.doc</string>
-	<string>StateRobotNSW\TheTransferOfJedi\Digital State archives for GSM May 2011.ppt</string>
+    <string>aa\bb\cc\Digital Archives Reference Group members.doc</string>
+	<string>aa\dd\ee\Migration project approach to digital archives.ppt</string>
   </inputFiles>
-  
   
   <actionSet name="start" nextActionSet="quarantine" errorActionSet="end"> </actionSet>
   
   <actionSet name="quarantine" nextActionSet="preservation" errorActionSet="error">
-  	
+  	<isilonCopy name="isiCOpy" >
+  		<from>C:\Nott\workflowdemo\inbox\</from>
+  		<to>C:\Nott\workflowdemo\quarantine\</to>
+  	</isilonCopy>	
   	<fileOps name="copy">
   	  <actionOption>COPY</actionOption>
   	  <source>C:\Nott\workflowdemo\inbox\</source>
