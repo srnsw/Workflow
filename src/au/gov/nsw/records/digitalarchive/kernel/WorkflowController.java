@@ -29,13 +29,13 @@ import au.gov.nsw.records.digitalarchive.utils.thread.NameableThreadFactory;
 public class WorkflowController implements EventHandler{
 
 	private static final Log log = LogFactory.getLog(WorkflowController.class);
-	
+
 	private Map<Long, Workflow> workflows;
 
 	private static final ScheduledExecutorService worker =  Executors.newSingleThreadScheduledExecutor(new NameableThreadFactory("daw-workflow-cleanup"));
-	
+
 	private static final WorkflowController instance = new WorkflowController();
-	
+
 	public static WorkflowController getInstance(){
 		return instance;
 	}
@@ -64,7 +64,7 @@ public class WorkflowController implements EventHandler{
 			}
 		}, 5, 5, TimeUnit.MINUTES);
 	}
-	
+
 	@Override
 	public void onEvent(long workflowId, int actionSetId, int actionId, String response) {
 		Workflow workflow = workflows.get(workflowId);
@@ -77,7 +77,7 @@ public class WorkflowController implements EventHandler{
 	}
 
 	public Workflow createWorkflow(String workflowXml, String reference){
-		
+
 		Workflow wf = WorkflowDeserializer.load(workflowXml);
 		if (wf!=null){
 
@@ -95,10 +95,10 @@ public class WorkflowController implements EventHandler{
 		}else{
 			log.error("Error while parsing workflow XML");
 		}
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * Load and continue execute all workflows that are not in completed or cancelled state.
 	 * Ideally, this method should be called immediately after the application has started.
@@ -130,9 +130,9 @@ public class WorkflowController implements EventHandler{
 			}
 		}
 		// iterate through all unfinished workflow's data
-		
+
 	}
-		
+
 	public Collection<Workflow> getActiveWorkflows(){
 		return workflows.values();
 	}
