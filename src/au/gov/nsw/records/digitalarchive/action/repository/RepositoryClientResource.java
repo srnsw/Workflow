@@ -73,6 +73,8 @@ public class RepositoryClientResource {
 						response.setError(true);
 						throw new WebApplicationException(Status.INTERNAL_SERVER_ERROR);
 					}
+					// TODO add some logic here
+					uploader.setReadOnly(f.getName(), destPath);
 				}
 				
 			}
