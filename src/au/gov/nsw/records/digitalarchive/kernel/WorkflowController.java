@@ -112,7 +112,7 @@ public class WorkflowController implements EventHandler{
 					workflows.put(cache.getLongId(), wf);
 					wf.prepare(cache);
 					String state = (String)wf.getCache().get(WorkflowCache.STATE);
-					// PENDING and ERROR should be started manually through User's action
+					// WAITING and ERROR should be started manually through User's action
 					if (!state.equals(WorkflowState.WAITING.toString()) && !state.equals(WorkflowState.ERROR.toString())){
 						CoreThreadFactory.getCallBackExecutorService().execute(new Runnable() {
 							@Override

@@ -2,9 +2,7 @@ package au.gov.nsw.records.digitalarchive.utils;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.StringWriter;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpEntity;
@@ -47,17 +45,10 @@ public class MultiPartFileUploader {
 	            HttpEntity resEntity = response.getEntity();
 	            
 	            log.info(String.format("Uploaded [%s] with [%s]", fileName, response.getStatusLine()));
-	            if (resEntity != null) {
+	            if (response.getStatusLine().toString().contains("Created") && response.getStatusLine().toString().contains("201")) {
 	                log.debug("Response content length: " + resEntity.getContentLength());
-	                
-	                StringWriter writer = new StringWriter();
-	                IOUtils.copy(resEntity.getContent(), writer, "UTF-8");
-	                String responseBody = writer.toString();
-	                log.info(String.format("Uploaded [%s] with [%s]", fileName, responseBody));
-	                
-	                if (responseBody.startsWith("created")){
-	                	return true;
-	                }
+	                log.info(String.format("Uploaded [%s] ok", fileName));
+	                return true;
 	            }
 	            EntityUtils.consume(resEntity);
 	        } finally {

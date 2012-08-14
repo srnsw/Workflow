@@ -10,10 +10,7 @@
   <actionSet name="start" nextActionSet="quarantine" errorActionSet="end"> </actionSet>
   
   <actionSet name="quarantine" nextActionSet="preservation" errorActionSet="error">
-  	<isilonCopy name="isiCOpy" >
-  		<from>C:\Nott\workflowdemo\inbox\</from>
-  		<to>C:\Nott\workflowdemo\quarantine\</to>
-  	</isilonCopy>	
+	
   	<fileOps name="copy">
   	  <actionOption>COPY</actionOption>
   	  <source>C:\Nott\workflowdemo\inbox\</source>

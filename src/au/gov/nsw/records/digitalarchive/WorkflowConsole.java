@@ -171,7 +171,6 @@ public class WorkflowConsole implements WorkflowNotificationListener{
 				System.out.println("Unable to create a workflow with the supplied xml");
 			}
 		} catch (IOException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 	}
@@ -182,7 +181,7 @@ public class WorkflowConsole implements WorkflowNotificationListener{
 		System.out.println(">list");
 		
 		System.out.println("\n[To create a new workflow]");
-		System.out.println(">create {records path} {workflow xml name} {reference}");
+		System.out.println(">create {xml path} {xml name} {reference}");
 		System.out.println(">create c:\\project\\records workflow.xml myrefernce1");
 		
 		System.out.println("\n[To start the created workflow]");
